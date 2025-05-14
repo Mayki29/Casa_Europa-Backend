@@ -37,3 +37,4 @@ build/
 application-dev.properties
 .env
 .env.*
+env.properties
