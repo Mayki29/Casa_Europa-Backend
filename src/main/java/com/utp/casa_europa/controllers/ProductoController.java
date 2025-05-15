@@ -22,7 +22,6 @@ public class ProductoController {
 
     @Autowired
     private ProductoService productoService;
-    
     // Endpoint para obtener todos los productos
     // Puedes usar @GetMapping para manejar solicitudes GET
     // Puedes usar @PostMapping para manejar solicitudes POST
@@ -32,9 +31,13 @@ public class ProductoController {
         return productoService.obtenerTodosProductos();
     }
 
-    @GetMapping("/categoria/{categoria}")
-    public List<Producto> obtenerPorCategoria(@PathVariable String categoria) {
-        return productoService.obtenerPorCategoria(categoria);
+    @GetMapping("/categoria/{id}")
+    public List<Producto> obtenerProductosPorCategoria(@PathVariable Long id) {
+        return productoService.obtenerProductosPorCategoria(id);
+    }
+    @GetMapping("/categoria/nombre/{nombreCategoria}")
+    public List<Producto> obtenerProductosPorNombreCategoria(@PathVariable String nombreCategoria) {
+        return productoService.obtenerProductosPorCategoria(nombreCategoria);
     }
     
 }

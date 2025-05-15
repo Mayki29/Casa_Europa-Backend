@@ -51,7 +51,6 @@ public class Producto {
         this.imagenUrl = imagenUrl;
         this.stock = stock;
         this.categoria = categoria;
-        
     }
 
     // Getters and Setters
