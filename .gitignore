@@ -35,4 +35,10 @@ build/
 
 ### Project ###
 application-dev.properties
+.env
+.env.*
 env.properties
+application-prod.properties
+*.jks
+*.p12
+*.cer
