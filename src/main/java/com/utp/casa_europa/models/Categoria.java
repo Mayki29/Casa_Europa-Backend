@@ -1,8 +1,17 @@
 package com.utp.casa_europa.models;
 
-import jakarta.persistence.*;
-import lombok.Data;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.Data;
 
 @Data
 @Entity
@@ -19,7 +28,7 @@ public class Categoria {
     @Column(columnDefinition =  "TEXT")
     private String descripcion; // Descripción de la categoría
 
-    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     private List<Producto> productos; // Relación con la entidad Producto
 
     /* Constructor
