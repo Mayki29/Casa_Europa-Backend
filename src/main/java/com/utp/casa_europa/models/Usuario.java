@@ -31,15 +31,29 @@ public class Usuario {
 
     private String nombre;
 
+    private String apellido;
+
+    private String dni;
+
     @Column(unique=true)
     private String email;
+
+    private String telefono;
 
     private String password;
 
     @Enumerated(EnumType.STRING)
     private Rol rol;
+    
+    @Enumerated(EnumType.STRING)
+    private Estado estado;
+
 
     @OneToMany(mappedBy="usuario", fetch=FetchType.LAZY)
     private List<Token> tokens;
+
+    @OneToMany(mappedBy="usuario", fetch=FetchType.LAZY)
+    private List<Venta> ventas;
+
 
 }

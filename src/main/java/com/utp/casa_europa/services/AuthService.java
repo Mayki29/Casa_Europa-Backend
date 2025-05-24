@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.utp.casa_europa.controllers.LoginRequest;
 import com.utp.casa_europa.controllers.RegisterRequest;
 import com.utp.casa_europa.controllers.TokenResponse;
+import com.utp.casa_europa.exceptions.UserAlreadyExistException;
+import com.utp.casa_europa.exceptions.UserNotFoundException;
 import com.utp.casa_europa.models.Rol;
 import com.utp.casa_europa.models.Token;
 import com.utp.casa_europa.models.Usuario;
@@ -38,6 +40,11 @@ public class AuthService {
     private AuthenticationManager authenticationManager;
 
     public TokenResponse register(RegisterRequest request){
+        //Validar que no existe email
+        if(!usuarioRepository.findByEmail(request.email()).isEmpty()){
+            throw new UserAlreadyExistException(request.email());
+        }
+
         var user = Usuario.builder()
                     .nombre(request.nombre())
                     .email(request.email())
@@ -52,6 +59,10 @@ public class AuthService {
     }
 
     public TokenResponse login(LoginRequest request){
+        //Validar que existe usuario por email
+        if(usuarioRepository.findByEmail(request.email()).isEmpty()){
+            throw new UserNotFoundException();
+        }
         authenticationManager.authenticate( //se configura en app config
             new UsernamePasswordAuthenticationToken(
                 request.email(), 
