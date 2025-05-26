@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name="tokens")
+
 public class Token {
 
     public enum TokenType {
@@ -36,6 +37,9 @@ public class Token {
 
     @Enumerated(EnumType.STRING)
     public TokenType tokenType = TokenType.BEARER;
+
+    @Builder.Default
+    private boolean activo = true;
 
     public boolean revoked;
 

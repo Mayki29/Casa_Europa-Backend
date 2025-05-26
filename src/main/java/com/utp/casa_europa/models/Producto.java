@@ -5,6 +5,7 @@ package com.utp.casa_europa.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -29,7 +30,8 @@ public class Producto {
     @Column(name = "creado_el")
     private LocalDateTime creado_el; // Fecha de creación del producto
 
-    private String imagenUrl; // Ruta o URL de la imagen
+    @Column(name = "imagen_url")
+    private String imagenUrl; // Solo la URL o nombre del archivo
 
     @Column(nullable = false, length = 100)
     private Integer stock; // Cantidad de producto disponible
