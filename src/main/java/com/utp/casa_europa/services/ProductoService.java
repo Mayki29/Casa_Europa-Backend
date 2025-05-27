@@ -1,9 +1,12 @@
 package com.utp.casa_europa.services;
 
+import java.time.LocalDateTime;
+
 import com.utp.casa_europa.models.Producto;
 import com.utp.casa_europa.models.Categoria;
 import com.utp.casa_europa.repositories.ProductoRepository;
 import com.utp.casa_europa.dtos.ProductoRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,9 @@ public class ProductoService {
     
     @Autowired
     private ProductoRepository productoRepository;
+
+    @Autowired
+    private S3BucketService s3BucketService;
 
     //obtener todos los productos
     public List<Producto> obtenerTodosProductos() {
@@ -66,10 +72,13 @@ public class ProductoService {
         
         // Aquí puedes manejar la imagen si es necesario
         if (request.getImagen() != null && !request.getImagen().isEmpty()) {
-            // Lógica para guardar la imagen y establecer la URL
-            String imagenUrl = "src/resources/static/images";
-            producto.setImagenUrl(imagenUrl);
+            
         }
+
+        // Lógica para guardar la imagen y establecer la URL
+        String imageName = request.getNombre() +"_"+LocalDateTime.now().toString();
+        String imageUrl = s3BucketService.uploadFile(imageName, request.getImagen());
+        producto.setImagenUrl(imageUrl);
         
         // Aquí deberías buscar la categoría por ID y establecerla en el producto
         Categoria categoria = new Categoria(); // Debes implementar la lógica para obtener la categoría por ID

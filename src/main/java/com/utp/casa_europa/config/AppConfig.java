@@ -19,6 +19,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.utp.casa_europa.models.Usuario;
 import com.utp.casa_europa.repositories.IUsuarioRepository;
 
@@ -34,6 +38,14 @@ public class AppConfig {
     @Value("${web.application.url}")
     private String webUrl;
 
+    @Value("${aws.access.key}")
+    private String awsAccessKey;
+
+    @Value("${aws.secret.key}")
+    private String awsSecretKey;
+
+    @Value("${aws.region}")
+    private String awsRegion;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -81,4 +93,14 @@ public class AppConfig {
         };
     }
 
+    @Bean
+    public AmazonS3 s3client() {
+        BasicAWSCredentials awsCreds = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
+        var awsS3Config = AmazonS3ClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
+                .withRegion(awsRegion) // This field if not exist throws an exception
+                .build();
+
+        return awsS3Config;
+    }
 }
