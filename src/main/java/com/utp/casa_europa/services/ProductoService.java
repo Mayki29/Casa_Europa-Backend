@@ -1,18 +1,18 @@
 package com.utp.casa_europa.services;
 
-import java.time.LocalDateTime;
-
-import com.utp.casa_europa.models.Producto;
-import com.utp.casa_europa.models.Categoria;
-import com.utp.casa_europa.repositories.ProductoRepository;
-import com.utp.casa_europa.dtos.ProductoRequest;
+import java.time.Instant;
+import java.util.List;
 import com.utp.casa_europa.dtos.ProductoResponse;
 import com.utp.casa_europa.dtos.CategoriaResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import com.utp.casa_europa.dtos.ProductoRequest;
+import com.utp.casa_europa.models.Categoria;
+import com.utp.casa_europa.models.Producto;
+import com.utp.casa_europa.repositories.ProductoRepository;
 
 @Service
 public class ProductoService {
@@ -109,7 +109,7 @@ public class ProductoService {
         }
 
         // Lógica para guardar la imagen y establecer la URL
-        String imageName = request.getNombre() +"_"+LocalDateTime.now().toString();
+        String imageName = String.format("%s_%s.%s", request.getNombre().replace(" ", ""), Instant.now().getEpochSecond(), getFileExtension(request.getImagen()));
         String imageUrl = s3BucketService.uploadFile(imageName, request.getImagen());
         producto.setImagenUrl(imageUrl);
         
@@ -142,5 +142,10 @@ public class ProductoService {
         productoExistente.setCategoria(categoria);
         
         return productoRepository.save(productoExistente);
+    }
+
+    private String getFileExtension(MultipartFile file){
+        String fileContentType = file.getContentType();
+        return fileContentType.substring(fileContentType.indexOf("/") + 1);
     }
 }

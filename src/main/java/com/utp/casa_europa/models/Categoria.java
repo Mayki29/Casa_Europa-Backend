@@ -2,6 +2,8 @@ package com.utp.casa_europa.models;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,6 +30,7 @@ public class Categoria {
     @Column(columnDefinition =  "TEXT")
     private String descripcion; // Descripción de la categoría
 
+    @JsonIgnore
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     private List<Producto> productos; // Relación con la entidad Producto
 
