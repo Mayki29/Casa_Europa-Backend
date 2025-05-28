@@ -13,6 +13,7 @@ import com.utp.casa_europa.models.Producto;
 import com.utp.casa_europa.services.ProductoService;
 import com.utp.casa_europa.utils.Response;
 import com.utp.casa_europa.dtos.ProductoRequest;
+import com.utp.casa_europa.dtos.ProductoResponse;
 
 
 @RestController
@@ -24,7 +25,7 @@ public class ProductoController {
     
     @GetMapping
     public ResponseEntity<?> obtenerTodosProductos() {
-        List<Producto> productos = productoService.obtenerTodosProductos();
+        List<ProductoResponse> productos = productoService.obtenerTodosProductosResponse();
         return Response.setResponse(productos, HttpStatus.OK);
     }
 
