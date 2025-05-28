@@ -5,6 +5,7 @@ package com.utp.casa_europa.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -41,6 +42,9 @@ public class Producto {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
+
+    @OneToMany(mappedBy = "producto")
+    private List<DetalleVenta> detalleVentas;
     
     
     // Constructor modificado
