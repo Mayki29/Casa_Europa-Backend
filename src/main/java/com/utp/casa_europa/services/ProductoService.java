@@ -1,6 +1,7 @@
 package com.utp.casa_europa.services;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,7 @@ public class ProductoService {
         producto.setDescripcion(request.getDescripcion());
         producto.setPrecio(request.getPrecio());
         producto.setStock(request.getStock());
+        producto.setCreado_el(LocalDateTime.now());
         
         // Aquí puedes manejar la imagen si es necesario
         if (request.getImagen() != null && !request.getImagen().isEmpty()) {

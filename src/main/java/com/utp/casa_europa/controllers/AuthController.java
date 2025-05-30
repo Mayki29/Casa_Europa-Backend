@@ -34,7 +34,8 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public TokenResponse authenticate(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader){
-        return null;
+    public ResponseEntity<?> authenticate(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader){
+        var token = authService.refreshToken(authHeader);
+        return Response.setResponse(token, HttpStatus.OK);
     }
 }
