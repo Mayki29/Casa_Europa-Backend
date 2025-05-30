@@ -42,3 +42,4 @@ application-prod.properties
 *.jks
 *.p12
 *.cer
+productos&categorias.txt

@@ -67,3 +67,7 @@ public class Categoria {
     }
     */
 }
+
+/*
+ * categorias: jamones, fiambres, chorizos y morcillas, 
+ */

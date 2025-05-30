@@ -3,6 +3,8 @@ package com.utp.casa_europa.services;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
+import com.utp.casa_europa.dtos.ProductoResponse;
+import com.utp.casa_europa.dtos.CategoriaResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,24 @@ import com.utp.casa_europa.repositories.ProductoRepository;
 
 @Service
 public class ProductoService {
+
+    private ProductoResponse mapToResponse(Producto producto) {
+        ProductoResponse response = new ProductoResponse();
+        response.setId(producto.getId());
+        response.setNombre(producto.getNombre());
+        response.setDescripcion(producto.getDescripcion());
+        response.setPrecio(producto.getPrecio());
+        response.setStock(producto.getStock());
+        response.setImagenUrl(producto.getImagenUrl());
+
+        CategoriaResponse catResp = new CategoriaResponse();
+        catResp.setId(producto.getCategoria().getId());
+        catResp.setNombre(producto.getCategoria().getNombre());
+        catResp.setDescripcion(producto.getCategoria().getDescripcion());
+
+        response.setCategoriaId(catResp);
+        return response;
+    }
     
     @Autowired
     private ProductoRepository productoRepository;
@@ -23,8 +43,21 @@ public class ProductoService {
     private S3BucketService s3BucketService;
 
     //obtener todos los productos
+    public List<ProductoResponse> obtenerTodosProductosResponse() {
+        return productoRepository.findAll()
+            .stream()
+            .map(this::mapToResponse)
+            .toList();
+    }
+    // Obtener todos los productos
     public List<Producto> obtenerTodosProductos() {
         return productoRepository.findAll();
+    }
+    // Obtener un producto por ID
+    public ProductoResponse obtenerProductoPorId(Long id) {
+        Producto producto = productoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
+        return mapToResponse(producto);
     }
 
     // Obtener productos por ID de categoría (usando la relación)
