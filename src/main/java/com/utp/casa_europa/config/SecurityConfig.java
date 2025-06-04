@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -39,7 +40,13 @@ public class SecurityConfig {
             .csrf( csrf -> csrf.disable())
             .authorizeHttpRequests(req ->
                     req
-                        .requestMatchers("/auth/**")
+                        .requestMatchers(HttpMethod.POST,"/api/productos/**")
+                        .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"/api/productos/**")
+                        .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/api/productos/**")
+                        .hasRole("ADMIN")
+                        .requestMatchers( "/api/auth/**")
                         .permitAll()
                         .anyRequest()
                         .permitAll()

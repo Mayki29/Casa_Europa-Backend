@@ -1,4 +1,4 @@
-package com.utp.casa_europa.controllers;
+package com.utp.casa_europa.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

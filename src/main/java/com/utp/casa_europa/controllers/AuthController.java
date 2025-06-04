@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.utp.casa_europa.dtos.LoginRequest;
+import com.utp.casa_europa.dtos.RegisterRequest;
 import com.utp.casa_europa.services.AuthService;
 import com.utp.casa_europa.utils.Response;
 

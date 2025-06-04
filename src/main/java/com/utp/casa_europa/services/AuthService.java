@@ -7,9 +7,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.utp.casa_europa.controllers.LoginRequest;
-import com.utp.casa_europa.controllers.RegisterRequest;
-import com.utp.casa_europa.controllers.TokenResponse;
+import com.utp.casa_europa.dtos.LoginRequest;
+import com.utp.casa_europa.dtos.RegisterRequest;
+import com.utp.casa_europa.dtos.TokenResponse;
 import com.utp.casa_europa.exceptions.UserAlreadyExistException;
 import com.utp.casa_europa.exceptions.UserNotFoundException;
 import com.utp.casa_europa.models.Rol;
@@ -47,8 +47,10 @@ public class AuthService {
 
         var user = Usuario.builder()
                     .nombre(request.nombre())
+                    .apellido(request.apellido())
                     .email(request.email())
                     .password(passwordEncoder.encode(request.password()))
+                    .telefono(request.telefono())
                     .rol(Rol.ROLE_CLIENT)
                     .build();
         var savedUser = usuarioRepository.save(user);
