@@ -51,6 +51,7 @@ public class Producto {
 
     //Relación con Categoria
     @ManyToOne(fetch = FetchType.LAZY)
+    
     @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
 
