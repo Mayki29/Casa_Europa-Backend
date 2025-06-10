@@ -3,7 +3,12 @@ package com.utp.casa_europa.controllers;
 import com.utp.casa_europa.dtos.InventarioRequest;
 import com.utp.casa_europa.models.Inventario;
 import com.utp.casa_europa.services.InventarioService;
+import com.utp.casa_europa.dtos.InventarioResponse;
+
 import com.utp.casa_europa.utils.Response;
+
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +23,7 @@ public class InventarioController {
     @PostMapping("/actualizar")
     public ResponseEntity<?> actualizarInventario(@RequestBody InventarioRequest inventarioRequest) {
         Inventario inventario = inventarioService.actualizarInventario(inventarioRequest);
+        InventarioResponse inventarioResponse = inventarioService.mapToResponse(inventario);
         return Response.setResponse(inventario, HttpStatus.OK);
     }
 
