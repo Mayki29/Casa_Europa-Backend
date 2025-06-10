@@ -1,26 +1,36 @@
 package com.utp.casa_europa.utils;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import java.time.Instant;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public class Response {
-    public static <T> ResponseEntity<Map<String, Object>> setResponse(T data, HttpStatus status){
-        Map<String, Object> responseMap = new HashMap<>();
-        if(status.isError()){
-            responseMap.put("success", false);
-            responseMap.put("error", data);
-        }else{
-            responseMap.put("success", true);
-            responseMap.put("result", data);
-        }
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Response<T> {
+     private boolean success;
+    private T result;
+    private Object error;
+    private int statusCode;
+    private long timestamp;
 
-        responseMap.put("statusCode", status.value());            
-        responseMap.put("timestamp", System.currentTimeMillis());            
-        
-        return ResponseEntity.status(status).body(responseMap);
+    public static <T> ResponseEntity<Response<T>> setResponse(T data, HttpStatus status) {
+        boolean isError = status.isError();
+
+        Response<T> response = Response.<T>builder()
+            .success(!isError)
+            .result(isError ? null : data)
+            .error(isError ? data : null)
+            .statusCode(status.value())
+            .timestamp(Instant.now().toEpochMilli())
+            .build();
+
+        return ResponseEntity.status(status).body(response);
     }
     
 
