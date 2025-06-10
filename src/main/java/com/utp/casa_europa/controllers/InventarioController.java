@@ -21,10 +21,10 @@ public class InventarioController {
     private InventarioService inventarioService;
 
     @PostMapping("/actualizar")
-    public ResponseEntity<?> actualizarInventario(@RequestBody InventarioRequest inventarioRequest) {
+    public ResponseEntity<Response<InventarioResponse>> actualizarInventario(@RequestBody InventarioRequest inventarioRequest) {
         Inventario inventario = inventarioService.actualizarInventario(inventarioRequest);
         InventarioResponse inventarioResponse = inventarioService.mapToResponse(inventario);
-        return Response.setResponse(inventario, HttpStatus.OK);
+        return Response.setResponse(inventarioResponse, HttpStatus.OK);
     }
 
     // Aquí puedes agregar más métodos para manejar otras operaciones relacionadas con el inventario

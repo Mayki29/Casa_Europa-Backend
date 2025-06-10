@@ -130,6 +130,9 @@ public class ProductoService {
 
     private String getFileExtension(MultipartFile file){
         String fileContentType = file.getContentType();
+        if (fileContentType == null || !fileContentType.contains("/")) {
+            return ""; // o puedes lanzar una excepción personalizada si lo prefieres
+        }
         return fileContentType.substring(fileContentType.indexOf("/") + 1);
     }
 
