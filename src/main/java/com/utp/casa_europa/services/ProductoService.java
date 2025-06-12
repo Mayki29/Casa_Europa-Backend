@@ -11,34 +11,40 @@ import org.springframework.web.multipart.MultipartFile;
 import com.utp.casa_europa.dtos.CategoriaResponse;
 import com.utp.casa_europa.dtos.ProductoRequest;
 import com.utp.casa_europa.dtos.ProductoResponse;
+import com.utp.casa_europa.exceptions.EntityNotFoundException;
 import com.utp.casa_europa.models.Categoria;
 import com.utp.casa_europa.models.Producto;
+import com.utp.casa_europa.repositories.CategoriaRepository;
 import com.utp.casa_europa.repositories.ProductoRepository;
 
 @Service
 public class ProductoService {
-    
+
     @Autowired
     private ProductoRepository productoRepository;
+    @Autowired
+    private CategoriaRepository categoriaRepository;
 
     @Autowired
     private S3BucketService s3BucketService;
 
-    //obtener todos los productos
+    // obtener todos los productos
     public List<ProductoResponse> obtenerTodosProductosResponse() {
         return productoRepository.findAll()
-            .stream()
-            .map(this::mapToResponse)
-            .toList();
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
+
     // Obtener todos los productos
     public List<Producto> obtenerTodosProductos() {
         return productoRepository.findAll();
     }
+
     // Obtener un producto por ID
-    public ProductoResponse obtenerProductoPorId(Long id) {
+    public ProductoResponse obtenerProductoPorIdResponse(Long id) {
         Producto producto = productoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("No se encontró el producto con ID: " + id));
         return mapToResponse(producto);
     }
 
@@ -47,7 +53,7 @@ public class ProductoService {
         return productoRepository.findByCategoriaId(categoriaId);
     }
 
-    //Obtener un producto por nombre de categoria
+    // Obtener un producto por nombre de categoria
     public List<Producto> obtenerProductosPorCategoria(String nombreCategoria) {
         return productoRepository.findByCategoriaNombre(nombreCategoria);
     }
@@ -57,27 +63,50 @@ public class ProductoService {
         producto.setCategoria(categoria);
         return productoRepository.save(producto);
     }
-    // Actualizar un producto existente
-    public Producto actualizarProducto(Long id, Producto productoActualizado) {
-        Producto productoExistente = productoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
-        
-        // Actualizar los campos del producto existente
-        productoExistente.setNombre(productoActualizado.getNombre());
-        productoExistente.setDescripcion(productoActualizado.getDescripcion());
-        productoExistente.setPrecio(productoActualizado.getPrecio());
-        productoExistente.setStock(productoActualizado.getStock());
-        productoExistente.setImagenUrl(productoActualizado.getImagenUrl());
-        productoExistente.setCategoria(productoActualizado.getCategoria());
 
-        return productoRepository.save(productoExistente);
+
+    // ACTUALIZAR UN PRODUCTO EXISTENTE
+    public ProductoResponse actualizarProducto(Long id, ProductoRequest productoActualizado) {
+        Producto productoExistente = productoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Error mano, chécalo tal vez no existe el producto con ID: " + id));
+
+        if (productoActualizado.getNombre() != null) {
+            productoExistente.setNombre(productoActualizado.getNombre());
+        }
+        if (productoActualizado.getDescripcion() != null) {
+            productoExistente.setDescripcion(productoActualizado.getDescripcion());
+        }
+        if (productoActualizado.getPrecio() != null) {
+            productoExistente.setPrecio(productoActualizado.getPrecio());
+        }
+        if (productoActualizado.getStock() != null) {
+            productoExistente.setStock(productoActualizado.getStock());
+        }
+
+        if (productoActualizado.getImagenUrl() != null && !productoActualizado.getImagenUrl().isEmpty()) {
+            productoExistente.setImagenUrl(productoActualizado.getImagenUrl());
+        }
+
+        if ((productoActualizado.getCategoriaId() != null)) {
+            Categoria categoria = categoriaRepository.findById(productoActualizado.getCategoriaId())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "Categoría no encontrada con ID: " + productoActualizado.getCategoriaId()));
+            productoExistente.setCategoria(categoria);
+
+        }
+        Producto actualizado = productoRepository.save(productoExistente);
+        return mapToResponse(actualizado);
     }
+
+
     // Eliminar un producto por ID
     public void eliminarProducto(Long id) {
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
         productoRepository.delete(producto);
     }
+
     // Crear un nuevo producto con una solicitud DTO
     public Producto crearProducto(ProductoRequest request) {
         Producto producto = new Producto();
@@ -86,49 +115,27 @@ public class ProductoService {
         producto.setPrecio(request.getPrecio());
         producto.setStock(request.getStock());
         producto.setCreado_el(LocalDateTime.now());
-        
+
         // Aquí puedes manejar la imagen si es necesario
-        if (request.getImagen() != null && !request.getImagen().isEmpty()) {
-            
+        if (request.getImagenUrl() != null && !request.getImagenUrl().isEmpty()) {
+
         }
 
         // Lógica para guardar la imagen y establecer la URL
-        String imageName = String.format("%s_%s.%s", request.getNombre().replace(" ", ""), Instant.now().getEpochSecond(), getFileExtension(request.getImagen()));
-        String imageUrl = s3BucketService.uploadFile(imageName, request.getImagen());
+        String imageName = String.format("%s_%s.%s", request.getNombre().replace(" ", ""),
+                Instant.now().getEpochSecond(), getFileExtension(request.getImagenFile()));
+        String imageUrl = s3BucketService.uploadFile(imageName, request.getImagenFile());
         producto.setImagenUrl(imageUrl);
-        
+
         // Aquí deberías buscar la categoría por ID y establecerla en el producto
         Categoria categoria = new Categoria(); // Debes implementar la lógica para obtener la categoría por ID
         categoria.setId(request.getCategoriaId());
         producto.setCategoria(categoria);
-        
+
         return productoRepository.save(producto);
     }
-    // Actualizar un producto con una solicitud DTO
-    public Producto actualizarProducto(Long id, ProductoRequest request) {
-        Producto productoExistente = productoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
-        
-        productoExistente.setNombre(request.getNombre());
-        productoExistente.setDescripcion(request.getDescripcion());
-        productoExistente.setPrecio(request.getPrecio());
-        productoExistente.setStock(request.getStock());
-        
-    
-        if (request.getImagen() != null && !request.getImagen().isEmpty()) {
-            String imagenUrl = "src/resources/static/images";
-            productoExistente.setImagenUrl(imagenUrl);
-        }
-        
-        // Aquí deberías buscar la categoría por ID y establecerla en el producto
-        Categoria categoria = new Categoria(); // Debes implementar la lógica para obtener la categoría por ID
-        categoria.setId(request.getCategoriaId());
-        productoExistente.setCategoria(categoria);
-        
-        return productoRepository.save(productoExistente);
-    }
 
-    private String getFileExtension(MultipartFile file){
+    private String getFileExtension(MultipartFile file) {
         String fileContentType = file.getContentType();
         if (fileContentType == null || !fileContentType.contains("/")) {
             return ""; // o puedes lanzar una excepción personalizada si lo prefieres
@@ -151,6 +158,7 @@ public class ProductoService {
         catResp.setDescripcion(producto.getCategoria().getDescripcion());
 
         response.setCategoriaId(catResp);
-        return response;
+        return response; 
     }
+    
 }

@@ -50,7 +50,7 @@ public class InventarioService {
         return inventarioRepository.findAll();
     }
     
-    public InventarioResponse mapToResponse(Inventario inventario) {
+   /* public InventarioResponse mapToResponse(Inventario inventario) {
         if (inventario == null) {
             return null;
         }
@@ -58,6 +58,6 @@ public class InventarioService {
         response.setId(inventario.getId());
         response.setProducto(productoService.mapToResponse(inventario.getProducto()));
         return response;
-    }
+    } */
     
 }

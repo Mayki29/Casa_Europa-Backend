@@ -10,8 +10,8 @@ public class ProductoResponse {
     private String descripcion;
     private BigDecimal precio;
     private Integer stock;
-    private String imagenUrl; // URL de la imagen del producto
     private CategoriaResponse categoriaId; // ID de la categoría a la que pertenece el producto
+    private String imagenUrl; // URL de la imagen del producto
 
     public ProductoResponse() {
     }

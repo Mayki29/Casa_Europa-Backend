@@ -10,16 +10,18 @@ public class ProductoRequest {
     private BigDecimal precio;
     private Integer stock;
     private Long categoriaId;
-    private MultipartFile imagen;
+    private MultipartFile imagenFile;
+    private String imagenUrl;
 
     // Constructor
-    public ProductoRequest(String nombre, String descripcion, BigDecimal precio, MultipartFile imagen, Integer stock, Long categoriaId) {
+    public ProductoRequest(String nombre, String descripcion, BigDecimal precio, Integer stock, Long categoriaId, String imagenUrl, MultipartFile imagenFile) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
-        this.imagen = imagen;
         this.stock = stock;
         this.categoriaId = categoriaId;
+        this.imagenFile = imagenFile;
+        this.imagenUrl = imagenUrl;
     }
 
     // Getters and Setters
@@ -46,28 +48,36 @@ public class ProductoRequest {
     public void setPrecio(BigDecimal precio) {
         this.precio = precio;
     }
-
-    public MultipartFile getImagen() {
-        return imagen;
-    }
-
-    public void setImagen(MultipartFile imagen) {
-        this.imagen = imagen;
-    }
-
+    
     public Integer getStock() {
         return stock;
     }
-
+    
     public void setStock(Integer stock) {
         this.stock = stock;
     }
-
+    
     public Long getCategoriaId() {
         return categoriaId;
     }
-
+    
     public void setCategoriaId(Long categoriaId) {
         this.categoriaId = categoriaId;
     }
+
+    
+    public MultipartFile getImagenFile() {
+        return imagenFile;
+    }
+    public void setImagenFile(MultipartFile imagenFile) {
+        this.imagenFile = imagenFile;
+    }
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
+    }
+    
+    
 }
