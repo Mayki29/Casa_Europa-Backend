@@ -7,8 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.utp.casa_europa.dtos.CategoriaRequest;
 import com.utp.casa_europa.exceptions.EntityNotFoundException;
-import com.utp.casa_europa.models.Categoria;
 import com.utp.casa_europa.repositories.CategoriaRepository;
+import com.utp.casa_europa.models.Categoria;
+import com.utp.casa_europa.models.Producto;
 
 @Service
 public class CategoriaService {
@@ -34,25 +35,37 @@ public class CategoriaService {
         return categoriaRepository.findAll();
     }
 
-    // Aquí puedes implementar otros métodos del servicio para manejar las
-    // operaciones relacionadas con las categorías
-    // Por ejemplo, métodos para actualizar, eliminar y buscar categorías por nombre
+    // ACTUALIZAR CATEGORIA
     public Categoria actualizarCategoria(Long id, CategoriaRequest request) {
-        Categoria categoria = obtenerCategoriaPorId(id);
-        if (categoria == null) {
-            throw new EntityNotFoundException("Categoría no encontrada");
+        Categoria categoriaExistente = categoriaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+
+        // Solo actualiza el nombre si viene en el request
+        if (request.getNombre() != null) {
+            categoriaExistente.setNombre(request.getNombre());
         }
-        categoria.setNombre(request.getNombre());
-        categoria.setDescripcion(request.getDescripcion());
-        return categoriaRepository.save(categoria);
+        // Solo actualiza la descripción si viene en el request
+        if (request.getDescripcion() != null) {
+            categoriaExistente.setDescripcion(request.getDescripcion());
+        }
+        return categoriaRepository.save(categoriaExistente);
     }
 
     public void eliminarCategoria(Long id) {
         Categoria categoria = obtenerCategoriaPorId(id);
         if (categoria != null) {
+            // Se reasignan los productos a una categoría por defecto antes de eliminar
+            Categoria categoriaDefault = categoriaRepository.findById(1L)
+                    .orElseThrow(() -> new EntityNotFoundException("Categoría por defecto no encontrada"));
+            List<Producto> productos = categoria.getProductos();
+            for (Producto producto : productos) {
+                producto.setCategoria(categoriaDefault);
+
+            }
             categoriaRepository.delete(categoria);
         } else {
             throw new EntityNotFoundException("Categoría no encontrada");
         }
     }
+
 }

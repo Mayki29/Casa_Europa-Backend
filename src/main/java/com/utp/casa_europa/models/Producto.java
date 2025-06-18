@@ -30,7 +30,7 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String nombre;
 
     @Column(columnDefinition = "TEXT")
@@ -45,13 +45,13 @@ public class Producto {
     @Column(name = "imagen_url")
     private String imagenUrl; // Solo la URL o nombre del archivo
 
-    @Column(nullable = false, length = 100)
+    @Column( length = 100)
     private Integer stock; // Cantidad de producto disponible
-
 
     //Relación con Categoria
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoria_id", nullable = false)
+    
+    @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
     @OneToMany(mappedBy = "producto")
