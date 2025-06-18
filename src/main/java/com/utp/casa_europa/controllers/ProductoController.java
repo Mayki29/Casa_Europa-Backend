@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.utp.casa_europa.dtos.ProductoRequest;
 import com.utp.casa_europa.dtos.ProductoResponse;
-import com.utp.casa_europa.models.Producto;
 import com.utp.casa_europa.services.ProductoService;
+import com.utp.casa_europa.models.Producto;
 import com.utp.casa_europa.utils.Response;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
