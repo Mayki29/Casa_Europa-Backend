@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,10 +28,10 @@ public class CategoriaController {
     @Autowired
     private CategoriaService categoriaService;
 
-    @PostMapping
-    public ResponseEntity<Response<Categoria>> crearCategoria(@RequestBody CategoriaRequest request) {
-        Categoria categoria = categoriaService.crearCategoria(request);
-        return Response.setResponse(categoria, HttpStatus.CREATED);
+    @GetMapping
+    public ResponseEntity<Response<List<Categoria>>> obtenerTodasCategorias() {
+        List<Categoria> categorias = categoriaService.obtenerTodasCategorias();
+        return Response.setResponse(categorias, HttpStatus.OK);
     }
     
     @GetMapping("/{id}")
@@ -37,27 +39,24 @@ public class CategoriaController {
         Categoria categoria = categoriaService.obtenerCategoriaPorId(id);
             return Response.setResponse(categoria, HttpStatus.OK);
     }
-    @GetMapping
-    public ResponseEntity<Response<List<Categoria>>> obtenerTodasCategorias() {
-        List<Categoria> categorias = categoriaService.obtenerTodasCategorias();
-        return Response.setResponse(categorias, HttpStatus.OK);
+
+    @PostMapping
+    public ResponseEntity<Response<Categoria>> crearCategoria(@RequestBody CategoriaRequest request) {
+        Categoria categoria = categoriaService.crearCategoria(request);
+        return Response.setResponse(categoria, HttpStatus.CREATED);
     }
-    
-    
-    // Aquí puedes implementar los métodos del controlador para manejar las solicitudes HTTP relacionadas con las categorías
-    // Por ejemplo, métodos para crear, actualizar, eliminar y listar categorías
 
-    // Ejemplo de método para obtener todas las categorías
-    // @GetMapping("/categorias")
-    // public List<Categoria> getAllCategorias() {
-    //     return categoriaService.getAllCategorias();
-    // }
+    @PutMapping("/{id}")
+    public ResponseEntity<Response<Categoria>> actualizarCategoria(@PathVariable Long id, @RequestBody CategoriaRequest request) {
+        Categoria categoriaActualizada = categoriaService.actualizarCategoria(id, request);
+        return Response.setResponse(categoriaActualizada, HttpStatus.OK);
+    }
 
-    // Ejemplo de método para crear una nueva categoría
-    // @PostMapping("/categorias")
-    // public Categoria createCategoria(@RequestBody CategoriaRequest categoriaRequest) {
-    //     return categoriaService.createCategoria(categoriaRequest);
-    // }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Response<String>> eliminarCategoria(@PathVariable Long id) {
+        categoriaService.eliminarCategoria(id);
+        return Response.setResponse("Categoría eliminada correctamente", HttpStatus.NO_CONTENT);
+    }
 
 
 }

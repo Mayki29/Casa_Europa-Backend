@@ -9,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,6 +21,8 @@ import com.utp.casa_europa.models.Producto;
 import com.utp.casa_europa.services.ProductoService;
 import com.utp.casa_europa.utils.Response;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
 
 @RestController
 @RequestMapping("/api/productos") // Cambia la ruta según tus necesidades
@@ -30,12 +31,21 @@ public class ProductoController {
     @Autowired
     private ProductoService productoService;
     
+    // OBTIENE TODOS LOS PRODUCTOS
     @GetMapping
     public ResponseEntity<Response<List<ProductoResponse>>> obtenerTodosProductos() {
         List<ProductoResponse> productos = productoService.obtenerTodosProductosResponse();
         return Response.setResponse(productos, HttpStatus.OK);
     }
 
+    // OBTIENE PRODUCTOS POR ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Response<ProductoResponse>> obtenerProductoPorId(@PathVariable Long id) {
+        ProductoResponse producto = productoService.obtenerProductoPorIdResponse(id);
+        return Response.setResponse(producto, HttpStatus.OK);
+    }
+
+    // OBTIENE PRODUCTOS POR CATEGORIA
     @GetMapping("/categoria/{id}")
     public ResponseEntity<Response<List<Producto>>> obtenerProductosPorCategoria(@PathVariable Long id) {
         List<Producto> productos = productoService.obtenerProductosPorCategoria(id);
@@ -48,18 +58,21 @@ public class ProductoController {
         return Response.setResponse(productos, HttpStatus.OK);
     }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Response<Producto>> crearProducto(@ModelAttribute ProductoRequest request) {
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Response<Producto>> crearProducto(@RequestBody ProductoRequest request) {
         Producto producto = productoService.crearProducto(request);
         return Response.setResponse(producto, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Response<Producto>> actualizarProducto(@PathVariable Long id, @ModelAttribute ProductoRequest request) {
-        Producto producto = productoService.actualizarProducto(id, request);
-        return Response.setResponse(producto, HttpStatus.OK);
+    //ACTUALIZAR PRODUCTO EXISTENTE
+    @PutMapping("/{id}")
+    public ResponseEntity<Response<ProductoResponse>> actualizarProducto(@PathVariable Long id, @RequestBody ProductoRequest request) {
+        ProductoResponse productoActualizado = productoService.actualizarProducto(id, request);
+        return Response.setResponse(productoActualizado, HttpStatus.OK);
     }
+    
 
+    // ELIMINAR PRODUCTO EXISTENTE POR ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Response<String>> eliminarProducto(@PathVariable Long id) {
         productoService.eliminarProducto(id);
