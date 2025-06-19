@@ -1,7 +1,6 @@
 package com.utp.casa_europa.dtos;
 
 import java.math.BigDecimal;
-
 import org.springframework.web.multipart.MultipartFile;
 
 public class ProductoRequest {
@@ -11,20 +10,19 @@ public class ProductoRequest {
     private Integer stock;
     private Long categoriaId;
     private MultipartFile imagenFile;
-    private String imagenUrl;
 
     // Constructor
-    public ProductoRequest(String nombre, String descripcion, BigDecimal precio, Integer stock, Long categoriaId, String imagenUrl, MultipartFile imagenFile) {
+    public ProductoRequest(String nombre, String descripcion, BigDecimal precio, Integer stock, Long categoriaId, MultipartFile imagenFile) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
         this.stock = stock;
         this.categoriaId = categoriaId;
         this.imagenFile = imagenFile;
-        this.imagenUrl = imagenUrl;
     }
 
     // Getters and Setters
+    
     public String getNombre() {
         return nombre;
     }
@@ -64,19 +62,12 @@ public class ProductoRequest {
     public void setCategoriaId(Long categoriaId) {
         this.categoriaId = categoriaId;
     }
-
     
     public MultipartFile getImagenFile() {
         return imagenFile;
     }
     public void setImagenFile(MultipartFile imagenFile) {
         this.imagenFile = imagenFile;
-    }
-    public String getImagenUrl() {
-        return imagenUrl;
-    }
-    public void setImagenUrl(String imagenUrl) {
-        this.imagenUrl = imagenUrl;
     }
     
     

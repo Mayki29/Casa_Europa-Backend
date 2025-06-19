@@ -8,9 +8,10 @@ import com.utp.casa_europa.models.Producto;
 import com.utp.casa_europa.repositories.CategoriaRepository;
 import com.utp.casa_europa.repositories.InventarioRepository;
 import com.utp.casa_europa.repositories.ProductoRepository;
-import com.utp.casa_europa.services.ProductoService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class InventarioService {
@@ -49,15 +50,9 @@ public class InventarioService {
     public Iterable<Inventario> obtenerTodosLosInventarios() {
         return inventarioRepository.findAll();
     }
+    public InventarioResponse mapToResponse(Inventario inventario) {
+        throw new UnsupportedOperationException("Unimplemented method 'mapToResponse'");
+    }
     
-   /* public InventarioResponse mapToResponse(Inventario inventario) {
-        if (inventario == null) {
-            return null;
-        }
-        InventarioResponse response = new InventarioResponse();
-        response.setId(inventario.getId());
-        response.setProducto(productoService.mapToResponse(inventario.getProducto()));
-        return response;
-    } */
     
 }

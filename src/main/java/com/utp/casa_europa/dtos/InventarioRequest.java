@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 
 public class InventarioRequest {
     private Long productoId;
-    private Integer stockInv;
-    private String nombreInv; 
-    private BigDecimal precioInv;
+    private Integer stock;
+    private String nombre; 
+    private BigDecimal precio;
     private Long categoriaId;
 
     public InventarioRequest() {
