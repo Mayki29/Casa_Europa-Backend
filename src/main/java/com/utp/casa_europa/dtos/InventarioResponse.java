@@ -1,32 +1,22 @@
 package com.utp.casa_europa.dtos;
 
+import java.time.LocalDateTime;
 
+import com.utp.casa_europa.models.enums.OperacionInventario;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class InventarioResponse {
     private Long id;
     private ProductoResponse producto;
-
-    public InventarioResponse() {
-    }
-
-    public InventarioResponse(Long id, ProductoResponse producto) {
-        this.id = id;
-        this.producto = producto;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public ProductoResponse getProducto() {
-        return producto;
-    }
-
-    public void setProducto(ProductoResponse producto) {
-        this.producto = producto;
-    }
+    private Integer cantidad;
+    private LocalDateTime fechaHora;
+    private OperacionInventario operacion;
 }

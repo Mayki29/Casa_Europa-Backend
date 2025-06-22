@@ -50,13 +50,15 @@ public class Producto {
 
     //Relación con Categoria
     @ManyToOne(fetch = FetchType.LAZY)
-    
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
     @OneToMany(mappedBy = "producto")
     @JsonIgnore
     private List<DetalleVenta> detalleVentas;
+
+    @OneToMany(mappedBy = "producto")    
+    private List<Inventario> inventario;
     
     
     // Constructor modificado

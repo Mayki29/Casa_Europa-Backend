@@ -20,11 +20,10 @@ public class InventarioController {
     @Autowired
     private InventarioService inventarioService;
 
-    @PostMapping("/actualizar")
-    public ResponseEntity<Response<InventarioResponse>> actualizarInventario(@RequestBody InventarioRequest inventarioRequest) {
-        Inventario inventario = inventarioService.actualizarInventario(inventarioRequest);
-        InventarioResponse inventarioResponse = inventarioService.mapToResponse(inventario);
-        return Response.setResponse(inventarioResponse, HttpStatus.OK);
+    @PostMapping()
+    public ResponseEntity<Response<InventarioResponse>> crearRegistroInventario(@RequestBody InventarioRequest inventarioRequest) {
+        InventarioResponse inventario = inventarioService.crearRegistroInventario(inventarioRequest);
+        return Response.setResponse(inventario, HttpStatus.OK);
     }
 
     // Aquí puedes agregar más métodos para manejar otras operaciones relacionadas con el inventario
