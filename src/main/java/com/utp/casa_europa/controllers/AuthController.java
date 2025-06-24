@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.utp.casa_europa.dtos.LoginRequest;
 import com.utp.casa_europa.dtos.RegisterRequest;
+import com.utp.casa_europa.dtos.TokenResponse;
 import com.utp.casa_europa.services.AuthService;
 import com.utp.casa_europa.utils.Response;
 
@@ -23,21 +24,21 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request){
+    public ResponseEntity<Response<TokenResponse>> register(@RequestBody RegisterRequest request){
         var token = authService.register(request);
         return Response.setResponse(token, HttpStatus.CREATED);
 
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody LoginRequest request){
+    public ResponseEntity<Response<TokenResponse>> authenticate(@RequestBody LoginRequest request){
        var token = authService.login(request);
        return Response.setResponse(token, HttpStatus.OK);
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> authenticate(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader){
-        var token = authService.refreshToken(authHeader);
+    public ResponseEntity<Response<TokenResponse>> authenticate(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader){
+        TokenResponse token = authService.refreshToken(authHeader);
         return Response.setResponse(token, HttpStatus.OK);
     }
 }
