@@ -2,10 +2,12 @@ package com.utp.casa_europa.services;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.common.IdentificationRequest;
 import com.mercadopago.client.payment.PaymentClient;
 import com.mercadopago.client.payment.PaymentCreateRequest;
@@ -26,8 +28,11 @@ public class PaymentService implements IPaymentService {
     @Override
     public ResponsePaymentDto proccessPayment(CardPaymentDto request) {
         try{
+            MercadoPagoConfig.setAccessToken(ACCESS_TOKEN);
+            
             Map<String, String> customHeaders = new HashMap<>();
-            customHeaders.put("x-idempotency-key","");
+            customHeaders.put("x-idempotency-key", UUID.randomUUID().toString()); 
+
             MPRequestOptions requestOptions = MPRequestOptions.builder()
                                             .customHeaders(customHeaders)
                                             .build();
@@ -48,7 +53,7 @@ public class PaymentService implements IPaymentService {
                         ).build()
                     ).build();
     
-            Payment createdPayment = client.create(paymentCreateRequest);
+            Payment createdPayment = client.create(paymentCreateRequest, requestOptions);
             return ResponsePaymentDto.builder()
                 .id(createdPayment.getId())
                 .status(createdPayment.getStatus())
