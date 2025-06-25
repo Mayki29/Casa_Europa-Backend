@@ -16,12 +16,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "productos") // Nombre de la tabla en la base de datos
-// Aquí puedes definir los atributos de la entidad
+@Table(name = "productos")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,8 +50,14 @@ public class Producto {
 
     //Relación con Categoria
     @ManyToOne(fetch = FetchType.LAZY)
-    
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
+    @OneToMany(mappedBy = "producto")
+    @JsonIgnore
+    private List<DetalleVenta> detalleVentas;
+
+    @OneToMany(mappedBy = "producto")    
+    private List<Inventario> inventario;
+    
 }

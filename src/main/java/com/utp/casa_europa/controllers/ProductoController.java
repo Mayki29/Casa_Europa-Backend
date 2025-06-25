@@ -59,9 +59,9 @@ public class ProductoController {
         return Response.setResponse(productos, HttpStatus.OK);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Response<Producto>> crearProducto(@RequestBody ProductoRequest request) {
-        Producto producto = productoService.crearProducto(request);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Response<ProductoResponse>> crearProducto(@RequestBody ProductoRequest request) {
+        ProductoResponse producto = productoService.crearProducto(request);
         return Response.setResponse(producto, HttpStatus.CREATED);
     }
 
