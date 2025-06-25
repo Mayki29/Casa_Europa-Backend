@@ -13,10 +13,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "categorias") // Nombre de la tabla en la base de datos
 public class Categoria {
     
@@ -30,44 +34,10 @@ public class Categoria {
     @Column(columnDefinition =  "TEXT")
     private String descripcion; // Descripción de la categoría
 
+    @Column(name = "imagen_url", length = 255)
+    private String imagenUrl; // URL de la imagen de la categoría (opcional)
+
     @JsonIgnore
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     private List<Producto> productos; // Relación con la entidad Producto
-
-    /* Constructor
-    public Categoria(Long id, String nombre, String descripcion) {
-        this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-    }
-
-    // Getters y Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-    */
 }
-
-/*
- * categorias: jamones, fiambres, chorizos y morcillas, 
- */

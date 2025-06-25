@@ -94,16 +94,15 @@ public class ProductoService {
         }
 
         if ((productoActualizado.getCategoriaId() != null)) {
-            Categoria categoria = categoriaRepository.findById(productoActualizado.getCategoriaId())
+            Categoria categoriaExistente = categoriaRepository.findById(productoActualizado.getCategoriaId())
                     .orElseThrow(() -> new EntityNotFoundException(
                             "Categoría no encontrada con ID: " + productoActualizado.getCategoriaId()));
-            productoExistente.setCategoria(categoria);
+            productoExistente.setCategoria(categoriaExistente);
 
         }
         Producto actualizado = productoRepository.save(productoExistente);
         return mapToResponse(actualizado);
     }
-
 
     // Eliminar un producto por ID
     public void eliminarProducto(Long id) {
@@ -119,7 +118,12 @@ public class ProductoService {
         producto.setDescripcion(request.getDescripcion());
         producto.setPrecio(request.getPrecio());
         producto.setStock(request.getStock());
-        producto.setCreado_el(LocalDateTime.now());
+        producto.setFecha_creacion(LocalDateTime.now());
+
+        // Validar que la imagen no sea nula
+        if (request.getImagen() == null || request.getImagen().isEmpty()) {
+            throw new RuntimeException("La imagen del producto no puede ser nula o vacía.");
+        }
 
         // Lógica para guardar la imagen y establecer la URL
         String imageName = String.format("%s_%s.%s", request.getNombre().replace(" ", ""),

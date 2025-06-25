@@ -5,13 +5,11 @@ import java.util.List;
 
 import com.utp.casa_europa.dtos.InventarioRequest;
 import com.utp.casa_europa.dtos.InventarioResponse;
-import com.utp.casa_europa.models.Categoria;
 import com.utp.casa_europa.models.Inventario;
 import com.utp.casa_europa.models.Producto;
 import com.utp.casa_europa.repositories.CategoriaRepository;
 import com.utp.casa_europa.repositories.InventarioRepository;
 import com.utp.casa_europa.repositories.ProductoRepository;
-import com.utp.casa_europa.services.ProductoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,8 +17,6 @@ import org.springframework.stereotype.Service;
 import com.utp.casa_europa.exceptions.EntityNotFoundException;
 import com.utp.casa_europa.mappers.InventarioMapper;
 import com.utp.casa_europa.models.enums.OperacionInventario;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class InventarioService {
@@ -94,6 +90,9 @@ public class InventarioService {
     }
     public List<Inventario> obtenerTodosLosInventarios() {
         return inventarioRepository.findAll();
+    }
+    public InventarioResponse mapToResponse(Inventario inventario) {
+        throw new UnsupportedOperationException("Unimplemented method 'mapToResponse'");
     }
     
 }
