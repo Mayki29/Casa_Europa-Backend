@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -58,15 +59,15 @@ public class ProductoController {
         return Response.setResponse(productos, HttpStatus.OK);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Response<Producto>> crearProducto(@RequestBody ProductoRequest request) {
-        Producto producto = productoService.crearProducto(request);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Response<ProductoResponse>> crearProducto(@RequestBody ProductoRequest request) {
+        ProductoResponse producto = productoService.crearProducto(request);
         return Response.setResponse(producto, HttpStatus.CREATED);
     }
 
     //ACTUALIZAR PRODUCTO EXISTENTE
-    @PutMapping("/{id}")
-    public ResponseEntity<Response<ProductoResponse>> actualizarProducto(@PathVariable Long id, @RequestBody ProductoRequest request) {
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Response<ProductoResponse>> actualizarProducto(@PathVariable Long id, @ModelAttribute ProductoRequest request) {
         ProductoResponse productoActualizado = productoService.actualizarProducto(id, request);
         return Response.setResponse(productoActualizado, HttpStatus.OK);
     }

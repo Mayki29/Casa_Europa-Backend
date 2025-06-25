@@ -1,16 +1,16 @@
-package com.utp.casa_europa.dtos;
+package com.utp.casa_europa.dtos.payment;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoriaResponse {
+@Builder
+public class ResponsePaymentDto {
     private Long id;
-    private String nombre; // Nombre de la categoría
-    private String descripcion;
+    private String status;
+    private String statusDetail;
 }
