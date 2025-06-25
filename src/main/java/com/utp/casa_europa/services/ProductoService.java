@@ -12,6 +12,7 @@ import com.utp.casa_europa.dtos.CategoriaResponse;
 import com.utp.casa_europa.dtos.ProductoRequest;
 import com.utp.casa_europa.dtos.ProductoResponse;
 import com.utp.casa_europa.exceptions.EntityNotFoundException;
+import com.utp.casa_europa.mappers.ProductoMapper;
 import com.utp.casa_europa.models.Categoria;
 import com.utp.casa_europa.models.Producto;
 import com.utp.casa_europa.repositories.CategoriaRepository;
@@ -84,21 +85,24 @@ public class ProductoService {
             productoExistente.setStock(productoActualizado.getStock());
         }
 
-        if (productoActualizado.getImagenUrl() != null && !productoActualizado.getImagenUrl().isEmpty()) {
-            productoExistente.setImagenUrl(productoActualizado.getImagenUrl());
+        if (productoActualizado.getImagen() != null && !productoActualizado.getImagen().isEmpty()) {
+            String imageName = String.format("%s_%s.%s", productoActualizado.getNombre().replace(" ", ""),
+            Instant.now().getEpochSecond(), getFileExtension(productoActualizado.getImagen()));
+            String imageUrl = s3BucketService.uploadFile(imageName, productoActualizado.getImagen());
+            productoExistente.setImagenUrl(imageUrl);
+
         }
 
         if ((productoActualizado.getCategoriaId() != null)) {
-            Categoria categoria = categoriaRepository.findById(productoActualizado.getCategoriaId())
+            Categoria categoriaExistente = categoriaRepository.findById(productoActualizado.getCategoriaId())
                     .orElseThrow(() -> new EntityNotFoundException(
                             "Categoría no encontrada con ID: " + productoActualizado.getCategoriaId()));
-            productoExistente.setCategoria(categoria);
+            productoExistente.setCategoria(categoriaExistente);
 
         }
         Producto actualizado = productoRepository.save(productoExistente);
         return mapToResponse(actualizado);
     }
-
 
     // Eliminar un producto por ID
     public void eliminarProducto(Long id) {
@@ -108,23 +112,23 @@ public class ProductoService {
     }
 
     // Crear un nuevo producto con una solicitud DTO
-    public Producto crearProducto(ProductoRequest request) {
+    public ProductoResponse crearProducto(ProductoRequest request) {
         Producto producto = new Producto();
         producto.setNombre(request.getNombre());
         producto.setDescripcion(request.getDescripcion());
         producto.setPrecio(request.getPrecio());
         producto.setStock(request.getStock());
-        producto.setCreado_el(LocalDateTime.now());
+        producto.setFecha_creacion(LocalDateTime.now());
 
-        // Aquí puedes manejar la imagen si es necesario
-        if (request.getImagenUrl() != null && !request.getImagenUrl().isEmpty()) {
-
+        // Validar que la imagen no sea nula
+        if (request.getImagen() == null || request.getImagen().isEmpty()) {
+            throw new RuntimeException("La imagen del producto no puede ser nula o vacía.");
         }
 
         // Lógica para guardar la imagen y establecer la URL
         String imageName = String.format("%s_%s.%s", request.getNombre().replace(" ", ""),
-                Instant.now().getEpochSecond(), getFileExtension(request.getImagenFile()));
-        String imageUrl = s3BucketService.uploadFile(imageName, request.getImagenFile());
+                Instant.now().getEpochSecond(), getFileExtension(request.getImagen()));
+        String imageUrl = s3BucketService.uploadFile(imageName, request.getImagen());
         producto.setImagenUrl(imageUrl);
 
         // Aquí deberías buscar la categoría por ID y establecerla en el producto
@@ -132,7 +136,8 @@ public class ProductoService {
         categoria.setId(request.getCategoriaId());
         producto.setCategoria(categoria);
 
-        return productoRepository.save(producto);
+        Producto nuevoProducto = productoRepository.save(producto);
+        return ProductoMapper.toResponse(nuevoProducto);
     }
 
     private String getFileExtension(MultipartFile file) {
@@ -157,7 +162,7 @@ public class ProductoService {
         catResp.setNombre(producto.getCategoria().getNombre());
         catResp.setDescripcion(producto.getCategoria().getDescripcion());
 
-        response.setCategoriaId(catResp);
+        response.setCategoria(catResp);
         return response; 
     }
     
