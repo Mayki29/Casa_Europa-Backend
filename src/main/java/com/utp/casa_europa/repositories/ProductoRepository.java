@@ -10,10 +10,10 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
     // Por ejemplo, si estás usando JPA, puedes extender JpaRepository o CrudRepository
 
     // Buscar productos por nombre de categoría
-    List<Producto> findByCategoriaNombre(String nombreCategoria);
+    List<Producto> findByCategorias_Nombre(String nombreCategoria);
 
     // Buscar productos por ID de categoría
-    List<Producto> findByCategoriaId(Long categoriaId);
+    List<Producto> findByCategorias_Id(Long categoriaId);
     // Buscar productos por nombre
     List<Producto> findByNombreContainingIgnoreCase(String nombre);
 }

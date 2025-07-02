@@ -1,6 +1,7 @@
 package com.utp.casa_europa.services;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,7 +60,9 @@ public class CategoriaService {
                     .orElseThrow(() -> new EntityNotFoundException("Categoría por defecto no encontrada"));
             List<Producto> productos = categoria.getProductos();
             for (Producto producto : productos) {
-                producto.setCategoria(categoriaDefault);
+                List<Categoria> nuevasCategorias = new ArrayList<>();
+                nuevasCategorias.add(categoriaDefault);
+                producto.setCategorias(nuevasCategorias);
 
             }
             categoriaRepository.delete(categoria);

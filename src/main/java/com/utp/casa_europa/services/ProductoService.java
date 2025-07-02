@@ -3,6 +3,7 @@ package com.utp.casa_europa.services;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,17 +52,19 @@ public class ProductoService {
 
     // Obtener productos por ID de categoría (usando la relación)
     public List<Producto> obtenerProductosPorCategoria(Long categoriaId) {
-        return productoRepository.findByCategoriaId(categoriaId);
+        return productoRepository.findByCategorias_Id(categoriaId);
     }
 
     // Obtener un producto por nombre de categoria
     public List<Producto> obtenerProductosPorCategoria(String nombreCategoria) {
-        return productoRepository.findByCategoriaNombre(nombreCategoria);
+        return productoRepository.findByCategorias_Nombre(nombreCategoria);
     }
 
     // Crear un nuevo producto con categoria
     public Producto crearProducto(Producto producto, Categoria categoria) {
-        producto.setCategoria(categoria);
+        List<Categoria> categorias = new ArrayList<>();
+        categorias.add(categoria);
+        producto.setCategorias(categorias);
         return productoRepository.save(producto);
     }
 
@@ -93,25 +96,28 @@ public class ProductoService {
 
         }
 
-        if ((productoActualizado.getCategoriaId() != null)) {
-            Categoria categoriaExistente = categoriaRepository.findById(productoActualizado.getCategoriaId())
-                    .orElseThrow(() -> new EntityNotFoundException(
-                            "Categoría no encontrada con ID: " + productoActualizado.getCategoriaId()));
-            productoExistente.setCategoria(categoriaExistente);
+        if ((productoActualizado.getCategoriaIds() != null)) {
+            List<Categoria> categorias = categoriaRepository.findAllById(productoActualizado.getCategoriaIds());
+            if (categorias.isEmpty()) {
+                throw new EntityNotFoundException(
+                        "Categoría no encontrada con ID(s): " + productoActualizado.getCategoriaIds());
+            }
+            // Asignar la primera categoría encontrada (ajusta según tu lógica de negocio)
+            productoExistente.setCategorias(categorias);
 
         }
         Producto actualizado = productoRepository.save(productoExistente);
         return mapToResponse(actualizado);
     }
 
-    // Eliminar un producto por ID
+    // ELIMINAR PRODUCTO POR ID
     public void eliminarProducto(Long id) {
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
         productoRepository.delete(producto);
     }
 
-    // Crear un nuevo producto con una solicitud DTO
+    // NUEVO PRODUCTO
     public ProductoResponse crearProducto(ProductoRequest request) {
         Producto producto = new Producto();
         producto.setNombre(request.getNombre());
@@ -132,9 +138,14 @@ public class ProductoService {
         producto.setImagenUrl(imageUrl);
 
         // Aquí deberías buscar la categoría por ID y establecerla en el producto
-        Categoria categoria = new Categoria(); // Debes implementar la lógica para obtener la categoría por ID
-        categoria.setId(request.getCategoriaId());
-        producto.setCategoria(categoria);
+        if (request.getCategoriaIds() == null || request.getCategoriaIds().isEmpty()) {
+            throw new RuntimeException("Debe proporcionar al menos un ID de categoría.");
+        }
+        List<Categoria> categorias = categoriaRepository.findAllById(request.getCategoriaIds());
+        if (categorias.isEmpty()) {
+            throw new EntityNotFoundException("Categorías no encontradas con ID: " + request.getCategoriaIds());
+        }
+        producto.setCategorias(categorias);
 
         Producto nuevoProducto = productoRepository.save(producto);
         return ProductoMapper.toResponse(nuevoProducto);
@@ -157,12 +168,18 @@ public class ProductoService {
         response.setStock(producto.getStock());
         response.setImagenUrl(producto.getImagenUrl());
 
-        CategoriaResponse catResp = new CategoriaResponse();
-        catResp.setId(producto.getCategoria().getId());
-        catResp.setNombre(producto.getCategoria().getNombre());
-        catResp.setDescripcion(producto.getCategoria().getDescripcion());
+        //Mapeo de la lista de categorias
+        List<CategoriaResponse> categoriasResponse = producto.getCategorias().stream()
+                .map(categoria -> {
+                    CategoriaResponse catResp = new CategoriaResponse();
+                    catResp.setId(categoria.getId());
+                    catResp.setNombre(categoria.getNombre());
+                    catResp.setDescripcion(categoria.getDescripcion());
+                    return catResp;
+                })
+                .toList();
 
-        response.setCategoria(catResp);
+        response.setCategorias(categoriasResponse);
         return response; 
     }
     

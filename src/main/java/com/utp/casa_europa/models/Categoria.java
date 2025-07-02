@@ -11,7 +11,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,7 +37,7 @@ public class Categoria {
     @Column(name = "imagen_url", length = 255)
     private String imagenUrl; // URL de la imagen de la categoría (opcional)
 
+    @ManyToMany(mappedBy = "categorias", cascade = CascadeType.ALL ,fetch = FetchType.LAZY)
     @JsonIgnore
-    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, fetch=FetchType.LAZY)
-    private List<Producto> productos; // Relación con la entidad Producto
+    private List<Producto> productos;
 }

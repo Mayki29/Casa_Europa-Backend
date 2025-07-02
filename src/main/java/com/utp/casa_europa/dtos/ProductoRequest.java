@@ -1,6 +1,7 @@
 package com.utp.casa_europa.dtos;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,7 +19,8 @@ public class ProductoRequest {
     private String descripcion;
     private BigDecimal precio;
     private Integer stock;
-    private Long categoriaId;
+    private List<Long> categoriaIds;
     private MultipartFile imagen;
 
 }
+

@@ -13,7 +13,11 @@ public class ProductoMapper {
             .descripcion(producto.getDescripcion())
             .precio(producto.getPrecio())
             .stock(producto.getStock())
-            .categoria(CategoriaMapper.toResponse(producto.getCategoria()))
+            .categorias(
+                producto.getCategorias().stream()
+                    .map(CategoriaMapper::toResponse)
+                    .toList()
+            )
             .imagenUrl(producto.getImagenUrl())
             .build();
 

@@ -59,6 +59,7 @@ public class ProductoController {
         return Response.setResponse(productos, HttpStatus.OK);
     }
 
+    // CREAR NUEVO PRODUCTO
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Response<ProductoResponse>> crearProducto(@RequestBody ProductoRequest request) {
         ProductoResponse producto = productoService.crearProducto(request);
