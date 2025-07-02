@@ -13,4 +13,5 @@ public class CategoriaResponse {
     private Long id;
     private String nombre; // Nombre de la categoría
     private String descripcion;
+    private String imagenUrlCat;
 }

@@ -35,7 +35,7 @@ public class Categoria {
     private String descripcion; // Descripción de la categoría
 
     @Column(name = "imagen_url", length = 255)
-    private String imagenUrl; // URL de la imagen de la categoría (opcional)
+    private String imagenUrlCat; // URL de la imagen de la categoría (opcional)
 
     @ManyToMany(mappedBy = "categorias", cascade = CascadeType.ALL ,fetch = FetchType.LAZY)
     @JsonIgnore

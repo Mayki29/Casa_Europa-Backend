@@ -10,6 +10,7 @@ public class CategoriaMapper {
             .id(categoria.getId())
             .nombre(categoria.getNombre())
             .descripcion(categoria.getDescripcion())
+            .imagenUrlCat(categoria.getImagenUrlCat()) // Asumiendo que Categoria tiene un campo imagenUrlCat
             .build();
     }
 }

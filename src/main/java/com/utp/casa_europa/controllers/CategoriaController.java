@@ -4,13 +4,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,18 +41,21 @@ public class CategoriaController {
             return Response.setResponse(categoria, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<Response<Categoria>> crearCategoria(@RequestBody CategoriaRequest request) {
+    // CREAR CATEGORÍA
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Response<Categoria>> crearCategoria(@ModelAttribute CategoriaRequest request) {
         Categoria categoria = categoriaService.crearCategoria(request);
         return Response.setResponse(categoria, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Response<Categoria>> actualizarCategoria(@PathVariable Long id, @RequestBody CategoriaRequest request) {
+    // ACTUALIZAR CATEGORÍA
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Response<Categoria>> actualizarCategoria(@PathVariable Long id, @ModelAttribute CategoriaRequest request) {
         Categoria categoriaActualizada = categoriaService.actualizarCategoria(id, request);
         return Response.setResponse(categoriaActualizada, HttpStatus.OK);
     }
 
+    // ELIMINAR CATEGORÍA
     @DeleteMapping("/{id}")
     public ResponseEntity<Response<String>> eliminarCategoria(@PathVariable Long id) {
         categoriaService.eliminarCategoria(id);
