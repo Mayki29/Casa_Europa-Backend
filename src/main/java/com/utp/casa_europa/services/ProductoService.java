@@ -124,6 +124,9 @@ public class ProductoService {
         if (request.getImagen() == null || request.getImagen().isEmpty()) {
             throw new RuntimeException("La imagen del producto no puede ser nula o vacía.");
         }
+        
+        Categoria categoria = categoriaRepository.findById(request.getCategoriaId())
+                                                .orElseThrow(()-> throw new EntityNotFoundException("Categoria no encontrada"));
 
         // Lógica para guardar la imagen y establecer la URL
         String imageName = String.format("%s_%s.%s", request.getNombre().replace(" ", ""),
