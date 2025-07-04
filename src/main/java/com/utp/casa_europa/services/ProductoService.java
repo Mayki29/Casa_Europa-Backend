@@ -68,7 +68,6 @@ public class ProductoService {
         return productoRepository.save(producto);
     }
 
-
     // ACTUALIZAR UN PRODUCTO EXISTENTE
     public ProductoResponse actualizarProducto(Long id, ProductoRequest productoActualizado) {
         Producto productoExistente = productoRepository.findById(id)
@@ -90,7 +89,7 @@ public class ProductoService {
 
         if (productoActualizado.getImagen() != null && !productoActualizado.getImagen().isEmpty()) {
             String imageName = String.format("%s_%s.%s", productoActualizado.getNombre().replace(" ", ""),
-            Instant.now().getEpochSecond(), getFileExtension(productoActualizado.getImagen()));
+                    Instant.now().getEpochSecond(), getFileExtension(productoActualizado.getImagen()));
             String imageUrl = s3BucketService.uploadFile(imageName, productoActualizado.getImagen());
             productoExistente.setImagenUrl(imageUrl);
 
@@ -168,7 +167,7 @@ public class ProductoService {
         response.setStock(producto.getStock());
         response.setImagenUrl(producto.getImagenUrl());
 
-        //Mapeo de la lista de categorias
+        // Mapeo de la lista de categorias
         List<CategoriaResponse> categoriasResponse = producto.getCategorias().stream()
                 .map(categoria -> {
                     CategoriaResponse catResp = new CategoriaResponse();
@@ -180,7 +179,20 @@ public class ProductoService {
                 .toList();
 
         response.setCategorias(categoriasResponse);
-        return response; 
+        return response;
     }
-    
+
+    public void actualizarCategoriasEnMasa(List<Long> productoIds, List<Long> categoriaIds) {
+        if (productoIds == null || productoIds.isEmpty() || productoIds.contains(null) ||
+        categoriaIds == null || categoriaIds.isEmpty() || categoriaIds.contains(null)) {
+        throw new IllegalArgumentException("Los IDs de productos y categorías no pueden ser nulos, vacíos ni contener valores nulos");
+    }
+        List<Categoria> categorias = categoriaRepository.findAllById(categoriaIds);
+        List<Producto> productos = productoRepository.findAllById(productoIds);
+        for (Producto producto : productos) {
+            producto.setCategorias(categorias);
+        }
+        productoRepository.saveAll(productos);
+    }
+
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.utp.casa_europa.dtos.Mamamasivo;
 import com.utp.casa_europa.dtos.ProductoRequest;
 import com.utp.casa_europa.dtos.ProductoResponse;
 import com.utp.casa_europa.models.Producto;
@@ -79,6 +80,13 @@ public class ProductoController {
     public ResponseEntity<Response<String>> eliminarProducto(@PathVariable Long id) {
         productoService.eliminarProducto(id);
         return Response.setResponse(null, HttpStatus.NO_CONTENT);
+    }
+
+    // ACTUALIZAR CATEGORÍAS EN MASA
+    @PostMapping(value = "/actualizacion-masiva", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> actualizarCategoriasMasivo(@ModelAttribute Mamamasivo request) {
+        productoService.actualizarCategoriasEnMasa(request.getProductoIds(), request.getCategoriaIds());
+        return ResponseEntity.ok("Categorías actualizadas en masa");
     }
     
 }
