@@ -96,6 +96,8 @@ public class VentaService {
                 .usuario(usuario)
                 .fechaHora(LocalDateTime.now())
                 .detalleVentas(listDetalle)
+                .promocion(promocionGlobal)
+                .montoDescuento(total.subtract(totalConDescuento))
                 .total(total)
                 .totalConDescuento(totalConDescuento)
                 .build();
