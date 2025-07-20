@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +32,7 @@ public class ProductoService {
     private S3BucketService s3BucketService;
 
     // obtener todos los productos
+    @Cacheable("listaProducto")
     public List<ProductoResponse> obtenerTodosProductosResponse() {
         return productoRepository.findAll()
                 .stream()
@@ -67,6 +70,7 @@ public class ProductoService {
 
 
     // ACTUALIZAR UN PRODUCTO EXISTENTE
+    @CacheEvict(value = "listaProducto", allEntries = true)
     public ProductoResponse actualizarProducto(Long id, ProductoRequest productoActualizado) {
         Producto productoExistente = productoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -105,6 +109,7 @@ public class ProductoService {
     }
 
     // Eliminar un producto por ID
+    @CacheEvict(value = "listaProducto", allEntries = true)
     public void eliminarProducto(Long id) {
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
@@ -112,6 +117,7 @@ public class ProductoService {
     }
 
     // Crear un nuevo producto con una solicitud DTO
+    @CacheEvict(value = "listaProducto", allEntries = true)
     public ProductoResponse crearProducto(ProductoRequest request) {
         Producto producto = new Producto();
         producto.setNombre(request.getNombre());
@@ -126,7 +132,7 @@ public class ProductoService {
         }
         
         Categoria categoria = categoriaRepository.findById(request.getCategoriaId())
-                                                .orElseThrow(()-> throw new EntityNotFoundException("Categoria no encontrada"));
+                                                .orElseThrow(()-> new EntityNotFoundException("Categoria no encontrada"));
 
         // Lógica para guardar la imagen y establecer la URL
         String imageName = String.format("%s_%s.%s", request.getNombre().replace(" ", ""),
@@ -134,9 +140,6 @@ public class ProductoService {
         String imageUrl = s3BucketService.uploadFile(imageName, request.getImagen());
         producto.setImagenUrl(imageUrl);
 
-        // Aquí deberías buscar la categoría por ID y establecerla en el producto
-        Categoria categoria = new Categoria(); // Debes implementar la lógica para obtener la categoría por ID
-        categoria.setId(request.getCategoriaId());
         producto.setCategoria(categoria);
 
         Producto nuevoProducto = productoRepository.save(producto);

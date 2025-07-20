@@ -1,5 +1,6 @@
 package com.utp.casa_europa.services;
 
+import com.utp.casa_europa.exceptions.InvalidTokenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -104,19 +105,19 @@ public class AuthService {
 
     public TokenResponse refreshToken(String authHeader){
         if(authHeader == null || !authHeader.startsWith("Bearer ")){
-            throw new IllegalArgumentException("Invalid Bearer token");
+            throw new InvalidTokenException("Invalid Bearer token");
         }
 
         String refreshToken = authHeader.substring(7);
         String userEmail = jwtService.extractUsername(refreshToken);
 
         if(userEmail == null){
-            throw new IllegalArgumentException("Invalid Refresh Token");
+            throw new InvalidTokenException("Invalid Refresh Token");
         }
         Usuario usuario = usuarioRepository.findByEmail(userEmail)
                     .orElseThrow(()-> new UsernameNotFoundException(userEmail));
         if(!jwtService.isTokenValid(refreshToken, usuario)){
-            throw new IllegalArgumentException("Invalid Refresh Token");
+            throw new InvalidTokenException("Invalid Refresh Token");
         }
 
         String accessToken = jwtService.generateToken(usuario);

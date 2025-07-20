@@ -40,12 +40,14 @@ public class SecurityConfig {
             .csrf( csrf -> csrf.disable())
             .authorizeHttpRequests(req ->
                     req
+                            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/productos/**")
                         .hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,"/api/productos/**")
                         .hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE,"/api/productos/**")
                         .hasRole("ADMIN")
+                        .requestMatchers("/api/venta").authenticated()
                         .requestMatchers( "/api/auth/**")
                         .permitAll()
                         .anyRequest()

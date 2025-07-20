@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VentaRequest {
-    private Integer idUsuario;
+    private Long usuarioId;
     private List<DetalleVentaDto> detalleVenta;
+    private String cuponDescuento;
 
 }
