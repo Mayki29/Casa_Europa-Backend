@@ -1,9 +1,7 @@
 package com.utp.casa_europa.controllers;
 
 import com.utp.casa_europa.dtos.VentaPagoDto;
-import com.utp.casa_europa.dtos.VentaRequest;
 import com.utp.casa_europa.dtos.payment.ResponsePaymentDto;
-import com.utp.casa_europa.models.Venta;
 import com.utp.casa_europa.services.JwtService;
 import com.utp.casa_europa.services.VentaService;
 import com.utp.casa_europa.utils.Response;
