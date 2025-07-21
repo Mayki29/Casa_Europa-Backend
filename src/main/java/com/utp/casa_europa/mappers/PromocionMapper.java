@@ -17,7 +17,7 @@ public class PromocionMapper {
                 .fechaInicio(promocion.getFechaInicio())
                 .fechaFin(promocion.getFechaFin())
                 .activa(promocion.getActiva())
-                .productos(promocion.getProductos().stream().map(ProductoMapper::toResponse).toList())
+                .productos(promocion.getProductos() != null ? promocion.getProductos().stream().map(ProductoMapper::toResponse).toList() : null)
                 .build();
     }
 
