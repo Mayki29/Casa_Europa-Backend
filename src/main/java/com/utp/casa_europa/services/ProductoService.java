@@ -1,9 +1,13 @@
 package com.utp.casa_europa.services;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.utp.casa_europa.models.Promocion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -36,7 +40,30 @@ public class ProductoService {
     public List<ProductoResponse> obtenerTodosProductosResponse() {
         return productoRepository.findAll()
                 .stream()
-                .map(this::mapToResponse)
+                .map(producto -> {
+                    // Buscar promoción activa
+                    Promocion promoActiva = producto.getPromociones().stream()
+                            .filter(promo ->
+                                    promo.getActiva() &&
+                                            !promo.getFechaInicio().isAfter(LocalDate.now()) &&
+                                            !promo.getFechaFin().isBefore(LocalDate.now())
+                            )
+                            .findFirst()
+                            .orElse(null);
+
+                    ProductoResponse response = ProductoMapper.toResponse(producto);
+
+                    if (promoActiva != null) {
+                        BigDecimal porcentaje = promoActiva.getValor().divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+                        BigDecimal descuento = producto.getPrecio().multiply(porcentaje).setScale(2, RoundingMode.HALF_UP);
+                        BigDecimal precioConDescuento = producto.getPrecio().subtract(descuento);
+
+                        response.setPrecioDescuento(precioConDescuento);
+                        response.setPorcentajeDescuento(promoActiva.getValor().toString());
+                    }
+
+                    return response;
+                })
                 .toList();
     }
 
@@ -49,7 +76,26 @@ public class ProductoService {
     public ProductoResponse obtenerProductoPorIdResponse(Long id) {
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("No se encontró el producto con ID: " + id));
-        return mapToResponse(producto);
+        Promocion promoActiva = producto.getPromociones().stream()
+                .filter(promo ->
+                        promo.getActiva() &&
+                                !promo.getFechaInicio().isAfter(LocalDate.now()) &&
+                                !promo.getFechaFin().isBefore(LocalDate.now())
+                )
+                .findFirst()
+                .orElse(null);
+
+        ProductoResponse response = ProductoMapper.toResponse(producto);
+
+        if (promoActiva != null) {
+            BigDecimal porcentaje = promoActiva.getValor().divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+            BigDecimal descuento = producto.getPrecio().multiply(porcentaje).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal precioConDescuento = producto.getPrecio().subtract(descuento);
+
+            response.setPrecioDescuento(precioConDescuento);
+            response.setPorcentajeDescuento(promoActiva.getValor().toString());
+        }
+        return response;
     }
 
     // Obtener productos por ID de categoría (usando la relación)
@@ -130,7 +176,7 @@ public class ProductoService {
         if (request.getImagen() == null || request.getImagen().isEmpty()) {
             throw new RuntimeException("La imagen del producto no puede ser nula o vacía.");
         }
-        
+
         Categoria categoria = categoriaRepository.findById(request.getCategoriaId())
                                                 .orElseThrow(()-> new EntityNotFoundException("Categoria no encontrada"));
 
@@ -169,7 +215,7 @@ public class ProductoService {
         catResp.setDescripcion(producto.getCategoria().getDescripcion());
 
         response.setCategoria(catResp);
-        return response; 
+        return response;
     }
-    
+
 }
