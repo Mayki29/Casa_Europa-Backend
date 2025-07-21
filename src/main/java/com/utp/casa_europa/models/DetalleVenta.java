@@ -9,11 +9,17 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Data
 @Table(name="detalle_ventas")
 public class DetalleVenta {
     @Id
@@ -23,7 +29,8 @@ public class DetalleVenta {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="producto_id")
     private Producto producto;
-    private Double precioUnitario;
+    private BigDecimal precioUnitario;
+    private BigDecimal precioConDescuento;
     private Integer cantidad;
 
     @ManyToOne(fetch=FetchType.LAZY)

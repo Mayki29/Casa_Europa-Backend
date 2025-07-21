@@ -67,8 +67,5 @@ public class PaymentService implements IPaymentService {
             System.out.println(exception.getMessage());
             throw new InternalError();
         }
-                
-
     }
-
 }

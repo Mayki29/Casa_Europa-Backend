@@ -32,5 +32,11 @@ public class GlobalExceptionHandler {
         return Response.setResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<Response<String>> handlerInvalidTokenException(InvalidTokenException ex){
+        return Response.setResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
+
 
 }

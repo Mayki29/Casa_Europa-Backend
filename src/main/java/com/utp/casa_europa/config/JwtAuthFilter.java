@@ -51,10 +51,25 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @org.springframework.lang.NonNull HttpServletRequest request,
             @org.springframework.lang.NonNull HttpServletResponse response,
             @org.springframework.lang.NonNull FilterChain filterChain) throws ServletException, IOException {
-        if (request.getServletPath().contains("/auth")) {
+        System.out.println("1: "+request.getHeader(HttpHeaders.AUTHORIZATION));
+
+        if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
             filterChain.doFilter(request, response);
             return;
         }
+
+        if (request.getServletPath().contains("/auth")) {
+            System.out.println(request);
+            filterChain.doFilter(request, response);
+            return;
+        }
+        if (!isProtectedPath(request)) {
+            System.out.println("2: "+request);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+
 
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -67,6 +82,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             userEmail = jwtService.extractUsername(jwtToken);
         } catch (ExpiredJwtException e) {
+
 
             Map<String, Object> responseMap = new HashMap<>();
             responseMap.put("success", false);
@@ -109,4 +125,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authToken);
         filterChain.doFilter(request, response);
     }
+
+    private boolean isProtectedPath(HttpServletRequest request) {
+        String path = request.getServletPath();
+        String method = request.getMethod();
+        System.out.println(path);
+        System.out.println(method);
+        // Proteger solo cuando es POST, PUT o DELETE en /api/productos/**
+        if (path.startsWith("/api/productos")) {
+            return method.equals("POST") || method.equals("PUT") || method.equals("DELETE");
+        }
+
+        // Proteger POST a /api/venta
+        if (path.equals("/api/venta") && method.equals("POST")) {
+            return true;
+        }
+
+        return false;
+    }
+
 }
