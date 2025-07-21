@@ -51,7 +51,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @org.springframework.lang.NonNull HttpServletRequest request,
             @org.springframework.lang.NonNull HttpServletResponse response,
             @org.springframework.lang.NonNull FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("1: "+request.getHeader(HttpHeaders.AUTHORIZATION));
 
         if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
             filterChain.doFilter(request, response);
@@ -59,12 +58,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         if (request.getServletPath().contains("/auth")) {
-            System.out.println(request);
             filterChain.doFilter(request, response);
             return;
         }
         if (!isProtectedPath(request)) {
-            System.out.println("2: "+request);
             filterChain.doFilter(request, response);
             return;
         }
@@ -129,8 +126,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private boolean isProtectedPath(HttpServletRequest request) {
         String path = request.getServletPath();
         String method = request.getMethod();
-        System.out.println(path);
-        System.out.println(method);
         // Proteger solo cuando es POST, PUT o DELETE en /api/productos/**
         if (path.startsWith("/api/productos")) {
             return method.equals("POST") || method.equals("PUT") || method.equals("DELETE");

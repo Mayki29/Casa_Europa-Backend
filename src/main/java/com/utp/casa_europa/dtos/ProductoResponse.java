@@ -16,6 +16,8 @@ public class ProductoResponse {
     private String nombre;
     private String descripcion;
     private BigDecimal precio;
+    private BigDecimal precioDescuento;
+    private String porcentajeDescuento;
     private Integer stock;
     private CategoriaResponse categoria; // ID de la categoría a la que pertenece el producto
     private String imagenUrl; // URL de la imagen del producto

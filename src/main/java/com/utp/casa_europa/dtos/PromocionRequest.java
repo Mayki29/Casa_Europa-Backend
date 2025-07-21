@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PromocionResponse {
+public class PromocionRequest {
     private Long id;
     private String nombre;
     private String descripcion;
@@ -23,6 +23,6 @@ public class PromocionResponse {
     private String codigo;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
-    private Boolean activa;
-    private List<ProductoResponse> productos;
+    private List<Long> productosId;
+
 }
