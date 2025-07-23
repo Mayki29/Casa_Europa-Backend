@@ -7,7 +7,6 @@ import com.utp.casa_europa.dtos.InventarioRequest;
 import com.utp.casa_europa.dtos.InventarioResponse;
 import com.utp.casa_europa.models.Inventario;
 import com.utp.casa_europa.models.Producto;
-import com.utp.casa_europa.repositories.CategoriaRepository;
 import com.utp.casa_europa.repositories.InventarioRepository;
 import com.utp.casa_europa.repositories.ProductoRepository;
 
@@ -24,11 +23,6 @@ public class InventarioService {
     private InventarioRepository inventarioRepository;
     @Autowired
     private ProductoRepository productoRepository;
-    @Autowired
-    private CategoriaRepository categoriaRepository;
-
-    @Autowired
-    private ProductoService productoService;
 
     
     public InventarioResponse crearRegistroInventario(InventarioRequest inventarioRequest ){

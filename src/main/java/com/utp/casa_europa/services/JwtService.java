@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import com.utp.casa_europa.models.Usuario;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
